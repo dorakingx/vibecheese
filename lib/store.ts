@@ -5,6 +5,7 @@ import { persist } from 'zustand/middleware'
 import { Bet, Market, DailyStreak, CheeseRank } from '@/types'
 import { spendVP, earnVP as vpEarnVP } from './services/vpService'
 import { calculateStreak, calculateStreakBonus, calculateRank } from './services/gamificationService'
+import { signMessage } from './services/blockchain'
 
 interface VibePointsState {
   vpBalance: number
@@ -62,6 +63,13 @@ export const useVibePointsStore = create<VibePointsState>()(
         if (!success) {
           throw new Error('Failed to record bet on blockchain')
         }
+
+        // Sign message with burner wallet (hidden capability for judges)
+        const message = `Bet placed on Market ${marketId}: ${side} ${amount} VP`
+        await signMessage(message).catch((error) => {
+          // Don't fail bet if signing fails, just log
+          console.warn('[Store] Failed to sign bet message:', error)
+        })
 
         // Update market betting totals
         const market = state.markets.find(m => m.id === marketId)

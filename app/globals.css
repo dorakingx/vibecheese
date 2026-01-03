@@ -48,6 +48,22 @@
   }
 }
 
+/* Streak animation */
+@keyframes flame-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+.flame-pulse {
+  animation: flame-pulse 1.5s ease-in-out infinite;
+}
+
 /* Mobile-first styles */
 @layer utilities {
   .hide-scrollbar {

@@ -8,7 +8,7 @@ import { HowToPlayModal } from '@/components/HowToPlayModal'
 import { LoginModal } from '@/components/LoginModal'
 import { useVibePointsStore } from '@/lib/store'
 import { mockMarkets } from '@/lib/mock-data'
-import { Sparkles, Info } from 'lucide-react'
+import { Info } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export default function Home() {
@@ -91,7 +91,7 @@ export default function Home() {
       {/* Empty State */}
       {activeMarkets.length === 0 && (
         <div className="flex flex-col items-center justify-center py-12 text-center">
-          <Sparkles className="h-12 w-12 text-muted-foreground mb-4" />
+          <span className="text-6xl mb-4">🧀</span>
           <p className="text-muted-foreground">No active markets yet</p>
         </div>
       )}

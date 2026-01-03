@@ -1,4 +1,4 @@
-# VibeCheese - Social Vibe Forecasting Mini App
+# VibeCheese: A Gamified Prediction Market on Soneium
 
 A mobile-first Prediction Market Mini App for the Soneium ecosystem where users predict future trends using free "Vibe Points (VP)" instead of real cryptocurrency.
 

@@ -28,7 +28,7 @@ export function GamificationWidget() {
           : 'bg-secondary/50 border-border/50'
       }`}>
         <Flame className={`h-5 w-5 ${
-          dailyStreak.currentStreak > 0 ? 'text-cheese-yellow animate-pulse' : 'text-muted-foreground'
+          dailyStreak.currentStreak > 0 ? 'text-cheese-yellow flame-pulse' : 'text-muted-foreground'
         }`} />
         <span className="text-sm font-semibold text-foreground">
           {dailyStreak.currentStreak > 0 ? (

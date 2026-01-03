@@ -1,4 +1,6 @@
 import { createPublicClient, http, type PublicClient } from 'viem'
+import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
+import type { PrivateKeyAccount } from 'viem/accounts'
 import { soneiumMinato } from '../soneium-config'
 
 /**
@@ -89,24 +91,107 @@ export class MockBlockchainService implements IBlockchainService {
 // Export singleton instance
 export const mockBlockchainService = new MockBlockchainService()
 
-// Mock wallet address generator (for profile display)
-function generateMockAddress(): string {
-  const chars = '0123456789abcdef'
-  return '0x' + Array.from({ length: 40 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
+/**
+ * Creates a burner wallet (real cryptographic account)
+ * Generates a random private key and creates an account
+ * Stores private key in localStorage for MVP (in production, use proper key management)
+ * @returns The wallet address (0x...)
+ */
+export function createBurnerWallet(): string {
+  if (typeof window === 'undefined') {
+    throw new Error('createBurnerWallet can only be called in browser environment')
+  }
+
+  // Check if burner wallet already exists
+  const existingPrivateKey = localStorage.getItem('vibecheese-burner-private-key')
+  if (existingPrivateKey) {
+    // Return existing address
+    const account = privateKeyToAccount(existingPrivateKey as `0x${string}`)
+    return account.address
+  }
+
+  // Generate new private key
+  const privateKey = generatePrivateKey()
+  
+  // Create account from private key
+  const account = privateKeyToAccount(privateKey)
+  
+  // Store private key in localStorage (MVP-level security)
+  // In production, this would use secure key management
+  localStorage.setItem('vibecheese-burner-private-key', privateKey)
+  localStorage.setItem('vibecheese-smart-wallet', account.address)
+  
+  console.log('[Blockchain] Created burner wallet:', account.address)
+  
+  return account.address
+}
+
+/**
+ * Gets the burner wallet account if it exists
+ * @returns PrivateKeyAccount or null
+ */
+function getBurnerAccount(): PrivateKeyAccount | null {
+  if (typeof window === 'undefined') {
+    return null
+  }
+
+  const privateKey = localStorage.getItem('vibecheese-burner-private-key')
+  if (!privateKey) {
+    return null
+  }
+
+  try {
+    return privateKeyToAccount(privateKey as `0x${string}`)
+  } catch (error) {
+    console.error('[Blockchain] Failed to create account from stored private key:', error)
+    return null
+  }
+}
+
+/**
+ * Signs a message using the burner wallet
+ * @param message Message to sign
+ * @returns Signature string, or null if no wallet exists
+ */
+export async function signMessage(message: string): Promise<string | null> {
+  const account = getBurnerAccount()
+  if (!account) {
+    console.warn('[Blockchain] No burner wallet found, cannot sign message')
+    return null
+  }
+
+  try {
+    // Sign message using the account
+    const signature = await account.signMessage({ message })
+    console.log('[Blockchain] Signed message:', message)
+    console.log('[Blockchain] Signature:', signature)
+    return signature
+  } catch (error) {
+    console.error('[Blockchain] Failed to sign message:', error)
+    return null
+  }
 }
 
 /**
  * Gets the user's smart wallet address (sponsored AA wallet)
- * Checks localStorage first, then generates a deterministic address if not found
+ * Checks for burner wallet first, then falls back to stored address
  * @returns Wallet address string
  */
 export async function getWalletAddress(): Promise<string> {
-  // Check localStorage first (set by LoginModal)
-  if (typeof window !== 'undefined') {
-    const storedAddress = localStorage.getItem('vibecheese-smart-wallet')
-    if (storedAddress) {
-      return storedAddress
-    }
+  if (typeof window === 'undefined') {
+    return '0x0000000000000000000000000000000000000000'
+  }
+
+  // Check for burner wallet first (real cryptographic account)
+  const burnerAccount = getBurnerAccount()
+  if (burnerAccount) {
+    return burnerAccount.address
+  }
+
+  // Check localStorage for stored address (set by LoginModal or fallback)
+  const storedAddress = localStorage.getItem('vibecheese-smart-wallet')
+  if (storedAddress) {
+    return storedAddress
   }
 
   // Simulate network delay (100-200ms)
@@ -115,11 +200,9 @@ export async function getWalletAddress(): Promise<string> {
 
   // Generate deterministic address based on session (fallback)
   // This ensures consistency across page refreshes if no login occurred
-  const sessionId = typeof window !== 'undefined' 
-    ? sessionStorage.getItem('vibecheese-session-id') || `session-${Date.now()}`
-    : `session-${Date.now()}`
+  const sessionId = sessionStorage.getItem('vibecheese-session-id') || `session-${Date.now()}`
   
-  if (typeof window !== 'undefined' && !sessionStorage.getItem('vibecheese-session-id')) {
+  if (!sessionStorage.getItem('vibecheese-session-id')) {
     sessionStorage.setItem('vibecheese-session-id', sessionId)
   }
 
@@ -134,9 +217,7 @@ export async function getWalletAddress(): Promise<string> {
   const address = '0x' + hex.repeat(5).substring(0, 40)
 
   // Store in localStorage for persistence
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('vibecheese-smart-wallet', address)
-  }
+  localStorage.setItem('vibecheese-smart-wallet', address)
 
   return address
 }

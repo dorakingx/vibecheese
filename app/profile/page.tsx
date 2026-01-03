@@ -7,8 +7,9 @@ import { Badge } from '@/components/ui/badge'
 import { User, Coins, TrendingUp, Clock, Wallet, Info } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { getWalletAddress } from '@/lib/services/blockchain'
-import { getRankInfo } from '@/lib/services/gamificationService'
+import { getRankInfo, calculateRank } from '@/lib/services/gamificationService'
 import { GamificationWidget } from '@/components/GamificationWidget'
+import type { CheeseRank } from '@/types'
 
 export default function ProfilePage() {
   const { vpBalance, bets, getRank } = useVibePointsStore()
@@ -27,6 +28,22 @@ export default function ProfilePage() {
     ? Math.round((wonBets.length / resolvedBets.length) * 100) 
     : 0
   const totalWagered = bets.reduce((sum, bet) => sum + bet.amount, 0)
+
+  // Calculate rank progress
+  const combinedScore = vpBalance + (wonBets.length * 100)
+  const rankThresholds: Record<CheeseRank, { min: number; next: CheeseRank | null; nextMin: number }> = {
+    'Baby Cheese': { min: 0, next: 'Cheddar Knight', nextMin: 1000 },
+    'Cheddar Knight': { min: 1000, next: 'Gorgonzola King', nextMin: 5000 },
+    'Gorgonzola King': { min: 5000, next: null, nextMin: Infinity },
+  }
+  
+  const currentThreshold = rankThresholds[rank]
+  const progressToNext = currentThreshold.next
+    ? Math.max(0, Math.min(100, ((combinedScore - currentThreshold.min) / (currentThreshold.nextMin - currentThreshold.min)) * 100))
+    : 100
+  const vpNeeded = currentThreshold.next
+    ? Math.max(0, currentThreshold.nextMin - combinedScore)
+    : 0
 
   return (
     <div className="container mx-auto px-4 py-6 pb-24">
@@ -62,6 +79,44 @@ export default function ProfilePage() {
           </CardTitle>
         </CardHeader>
       </Card>
+
+      {/* Rank Progress */}
+      {currentThreshold.next && (
+        <Card className="mb-6 border-cheese-yellow/30">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-cheese-yellow" />
+              Rank Progress
+            </CardTitle>
+            <CardDescription>
+              {vpNeeded > 0 ? (
+                <>
+                  {vpNeeded.toLocaleString()} VP until <span className="font-semibold text-cheese-yellow">{currentThreshold.next}</span>
+                </>
+              ) : (
+                <>You've reached the maximum rank!</>
+              )}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">{rank}</span>
+                <span className="text-muted-foreground">{currentThreshold.next}</span>
+              </div>
+              <div className="w-full bg-secondary rounded-full h-3 overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-cheese-yellow to-soneium-blue transition-all duration-500 ease-out"
+                  style={{ width: `${progressToNext}%` }}
+                />
+              </div>
+              <div className="text-xs text-muted-foreground text-center">
+                Combined Score: {combinedScore.toLocaleString()} / {currentThreshold.nextMin.toLocaleString()}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Smart Account */}
       <Card className="mb-6 border-soneium-blue/30">

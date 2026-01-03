@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Wallet } from 'lucide-react'
+import { createBurnerWallet } from '@/lib/services/blockchain'
 
 interface LoginModalProps {
   isOpen: boolean
@@ -16,42 +17,26 @@ interface LoginModalProps {
   onLogin: (provider: 'google' | 'sony') => void
 }
 
-/**
- * Generates a deterministic smart wallet address based on provider and timestamp
- */
-function generateSmartWalletAddress(provider: string): string {
-  // Create a deterministic seed from provider and a fixed timestamp (for consistency)
-  const seed = `${provider}-${Date.now()}`
-  
-  // Simple hash function for deterministic address generation
-  let hash = 0
-  for (let i = 0; i < seed.length; i++) {
-    const char = seed.charCodeAt(i)
-    hash = ((hash << 5) - hash) + char
-    hash = hash & hash // Convert to 32-bit integer
-  }
-  
-  // Convert to hex and pad to 40 characters (20 bytes = 40 hex chars)
-  const hex = Math.abs(hash).toString(16).padStart(8, '0')
-  const address = '0x' + hex.repeat(5).substring(0, 40)
-  
-  return address
-}
-
 export function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps) {
   const handleLogin = (provider: 'google' | 'sony') => {
-    // Generate deterministic smart wallet address
-    const walletAddress = generateSmartWalletAddress(provider)
-    
-    // Store in localStorage
-    localStorage.setItem('vibecheese-smart-wallet', walletAddress)
-    localStorage.setItem('vibecheese-login-provider', provider)
-    
-    // Call onLogin callback
-    onLogin(provider)
-    
-    // Close modal
-    onClose()
+    try {
+      // Create real cryptographic burner wallet
+      const walletAddress = createBurnerWallet()
+      
+      // Store login provider
+      localStorage.setItem('vibecheese-login-provider', provider)
+      
+      console.log(`[Login] Created burner wallet for ${provider}:`, walletAddress)
+      
+      // Call onLogin callback
+      onLogin(provider)
+      
+      // Close modal
+      onClose()
+    } catch (error) {
+      console.error('[Login] Failed to create burner wallet:', error)
+      alert('Failed to create wallet. Please try again.')
+    }
   }
 
   return (
