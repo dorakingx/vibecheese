@@ -102,6 +102,28 @@
   animation: signing-pulse 1.5s ease-in-out infinite;
 }
 
+/* Block number flash animation */
+@keyframes block-flash {
+  0% {
+    color: hsl(var(--foreground));
+    background-color: transparent;
+  }
+  50% {
+    color: #FFD700; /* Cheese Yellow */
+    background-color: rgba(255, 215, 0, 0.2);
+  }
+  100% {
+    color: hsl(var(--foreground));
+    background-color: transparent;
+  }
+}
+
+.block-flash {
+  animation: block-flash 0.5s ease-in-out;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
 /* Mobile-first styles */
 @layer utilities {
   .hide-scrollbar {

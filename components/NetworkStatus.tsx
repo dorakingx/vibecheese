@@ -7,8 +7,11 @@ export function NetworkStatus() {
   const [blockNumber, setBlockNumber] = useState<bigint | null>(null)
   const [isConnected, setIsConnected] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [isBlockUpdating, setIsBlockUpdating] = useState(false)
 
   useEffect(() => {
+    let previousBlock: bigint | null = null
+    
     const updateStatus = async () => {
       try {
         const connected = await checkConnection()
@@ -16,14 +19,22 @@ export function NetworkStatus() {
         
         if (connected) {
           const block = await getBlockNumber()
+          // Check if block number changed to trigger flash animation
+          if (block !== null && block !== previousBlock) {
+            setIsBlockUpdating(true)
+            setTimeout(() => setIsBlockUpdating(false), 500)
+          }
+          previousBlock = block
           setBlockNumber(block)
         } else {
           setBlockNumber(null)
+          previousBlock = null
         }
       } catch (error) {
         console.error('[NetworkStatus] Error updating status:', error)
         setIsConnected(false)
         setBlockNumber(null)
+        previousBlock = null
       } finally {
         setIsLoading(false)
       }
@@ -32,8 +43,8 @@ export function NetworkStatus() {
     // Initial check
     updateStatus()
 
-    // Update every 8 seconds
-    const interval = setInterval(updateStatus, 8000)
+    // Update every 4 seconds for real-time feel
+    const interval = setInterval(updateStatus, 4000)
 
     return () => clearInterval(interval)
   }, [])
@@ -55,9 +66,14 @@ export function NetworkStatus() {
           <>
             <span className="text-green-500 network-pulse">🟢</span>
             <span className="text-xs text-muted-foreground">
-              Live on Soneium Minato (Testnet)
+              Live on Soneium Minato
               {blockNumber !== null && (
-                <span className="ml-1 font-mono">(Block: #{blockNumber.toString()})</span>
+                <span className="ml-1">
+                  <span className="mx-1">|</span>
+                  <span className={`font-mono ${isBlockUpdating ? 'block-flash' : ''}`}>
+                    Block: #{blockNumber.toString()}
+                  </span>
+                </span>
               )}
             </span>
           </>
