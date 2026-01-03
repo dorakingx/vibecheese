@@ -71,8 +71,15 @@ export class MockBlockchainService implements IBlockchainService {
 
   /**
    * Simulates recording a bet on-chain
+   * Actually signs the bet message to prove cryptographic operations
    */
   async recordBet(marketId: string, amount: number, side: string): Promise<void> {
+    // Create message payload for signing
+    const message = `VibeCheese Bet: ${marketId} - ${side} - ${amount} VP`
+    
+    // Sign the bet message using the burner wallet
+    const signature = await signMessage(message)
+    
     // Simulate network delay (200-500ms)
     const delay = 200 + Math.random() * 300
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -80,11 +87,12 @@ export class MockBlockchainService implements IBlockchainService {
     const txHash = `0x${Math.random().toString(16).substr(2, 64)}`
     
     console.log(`[Blockchain Mock] Recording bet: Market ${marketId}, ${side}, ${amount} VP`)
+    console.log(`[Blockchain Mock] Bet Signature:`, signature)
     console.log(`[Blockchain Mock] Transaction Hash: ${txHash}`)
     console.log(`[Blockchain Mock] Status: Confirmed`)
     
     // In real implementation, this would call Startale AA SDK
-    // await startaleSDK.recordBet({ marketId, amount, side })
+    // await startaleSDK.recordBet({ marketId, amount, side, signature })
   }
 }
 

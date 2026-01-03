@@ -53,9 +53,9 @@ export function NetworkStatus() {
       <div className="container mx-auto flex items-center justify-center gap-2">
         {isConnected ? (
           <>
-            <span className="text-green-500">🟢</span>
+            <span className="text-green-500 network-pulse">🟢</span>
             <span className="text-xs text-muted-foreground">
-              Connected to Soneium Minato
+              Soneium Minato (Live)
               {blockNumber !== null && (
                 <span className="ml-1 font-mono">(Block: #{blockNumber.toString()})</span>
               )}

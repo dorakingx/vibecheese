@@ -19,7 +19,36 @@ A mobile-first Prediction Market Mini App for the Soneium ecosystem where users 
 - **UI Components**: Shadcn UI
 - **Icons**: Lucide React
 - **State Management**: Zustand with localStorage persistence
+- **Web3**: viem for blockchain interactions
 - **Deployment**: Vercel-ready
+
+## Technical Architecture
+
+### Account Abstraction (AA) Simulation
+
+For this MVP, we use local **Burner Wallets** (viem) to simulate the Gasless/AA experience required by Startale. The UX is identical to the final production version.
+
+#### Key Components
+
+1. **Burner Wallet Generation**
+   - Uses `viem`'s `generatePrivateKey()` and `privateKeyToAccount()` to create real cryptographic accounts
+   - Private keys stored in localStorage for MVP (production would use secure key management)
+   - Each user gets a unique Ethereum-compatible address
+
+2. **Message Signing**
+   - All bet transactions are cryptographically signed using the burner wallet
+   - Signatures are logged to console for verification
+   - Message format: `"VibeCheese Bet: [marketId] - [side] - [amount] VP"`
+
+3. **Soneium Minato Testnet Connectivity**
+   - Public client connection to Soneium Minato Testnet (Chain ID: 1946)
+   - Real-time block number fetching
+   - Network status displayed in UI footer
+
+4. **Future Integration Path**
+   - Current implementation prepares for Startale AA SDK integration
+   - Service-oriented architecture allows easy swap of mock service with production SDK
+   - All blockchain operations go through `IBlockchainService` interface
 
 ## Getting Started
 

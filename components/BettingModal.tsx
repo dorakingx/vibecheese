@@ -71,8 +71,8 @@ export function BettingModal({ market, isOpen, onClose }: BettingModalProps) {
     setIsPlacingBet(true)
     setIsSigning(true)
     try {
-      // Show signing message
-      await new Promise(resolve => setTimeout(resolve, 500)) // Brief delay to show signing state
+      // Show signing message - 800ms delay to ensure users see the cryptographic operation
+      await new Promise(resolve => setTimeout(resolve, 800))
       
       await bet(latestMarket.id, selectedSide, currentBet)
       setIsSigning(false)
@@ -188,7 +188,7 @@ export function BettingModal({ market, isOpen, onClose }: BettingModalProps) {
           {isSigning && (
             <div className="rounded-lg bg-soneium-blue/10 border border-soneium-blue/30 p-3 text-center">
               <p className="text-sm text-soneium-blue font-medium">
-                Signing transaction on Soneium Minato...
+                🔐 Signing transaction with Smart Account...
               </p>
             </div>
           )}

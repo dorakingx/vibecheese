@@ -69,6 +69,23 @@
   animation: flame-pulse 1.5s ease-in-out infinite;
 }
 
+/* Network status pulse animation */
+@keyframes network-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+.network-pulse {
+  animation: network-pulse 2s ease-in-out infinite;
+  display: inline-block;
+}
+
 /* Mobile-first styles */
 @layer utilities {
   .hide-scrollbar {

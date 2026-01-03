@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react'
 import { useVibePointsStore } from '@/lib/store'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { User, Coins, TrendingUp, Clock, Wallet, Info } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { User, Coins, TrendingUp, Clock, Wallet, Info, Copy, Check, ChevronDown, ChevronUp, AlertTriangle } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { getWalletAddress } from '@/lib/services/blockchain'
 import { getRankInfo, calculateRank } from '@/lib/services/gamificationService'
@@ -14,10 +15,41 @@ import type { CheeseRank } from '@/types'
 export default function ProfilePage() {
   const { vpBalance, bets, getRank } = useVibePointsStore()
   const [walletAddress, setWalletAddress] = useState<string>('')
+  const [copied, setCopied] = useState(false)
+  const [showDeveloperOptions, setShowDeveloperOptions] = useState(false)
+  const [privateKeyCopied, setPrivateKeyCopied] = useState(false)
 
   useEffect(() => {
     getWalletAddress().then(setWalletAddress)
   }, [])
+
+  const handleCopyAddress = async () => {
+    if (!walletAddress) return
+    try {
+      await navigator.clipboard.writeText(walletAddress)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (error) {
+      console.error('Failed to copy address:', error)
+    }
+  }
+
+  const handleExportPrivateKey = async () => {
+    if (typeof window === 'undefined') return
+    const privateKey = localStorage.getItem('vibecheese-burner-private-key')
+    if (!privateKey) {
+      alert('No private key found. Please login first.')
+      return
+    }
+    try {
+      await navigator.clipboard.writeText(privateKey)
+      setPrivateKeyCopied(true)
+      setTimeout(() => setPrivateKeyCopied(false), 2000)
+    } catch (error) {
+      console.error('Failed to copy private key:', error)
+      alert('Failed to copy private key')
+    }
+  }
 
   const rank = getRank()
   const rankInfo = getRankInfo(rank)
@@ -137,8 +169,23 @@ export default function ProfilePage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="rounded-lg bg-secondary/50 p-4 font-mono text-sm break-all border border-soneium-blue/20">
-            {walletAddress || 'Loading...'}
+          <div className="flex items-center gap-2">
+            <div className="flex-1 rounded-lg bg-secondary/50 p-4 font-mono text-sm break-all border border-soneium-blue/20">
+              {walletAddress || 'Loading...'}
+            </div>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleCopyAddress}
+              className="touch-target shrink-0"
+              title="Copy address"
+            >
+              {copied ? (
+                <Check className="h-4 w-4 text-green-500" />
+              ) : (
+                <Copy className="h-4 w-4" />
+              )}
+            </Button>
           </div>
           <div className="mt-3 flex items-center gap-2">
             <Badge variant="outline" className="bg-soneium-blue/10 border-soneium-blue/30 text-soneium-blue text-xs">
@@ -146,6 +193,57 @@ export default function ProfilePage() {
             </Badge>
           </div>
         </CardContent>
+      </Card>
+
+      {/* Developer Options */}
+      <Card className="mb-6 border-border/50">
+        <CardHeader>
+          <Button
+            variant="ghost"
+            onClick={() => setShowDeveloperOptions(!showDeveloperOptions)}
+            className="w-full justify-between p-0 h-auto"
+          >
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              Developer Options
+            </CardTitle>
+            {showDeveloperOptions ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : (
+              <ChevronDown className="h-4 w-4" />
+            )}
+          </Button>
+        </CardHeader>
+        {showDeveloperOptions && (
+          <CardContent className="space-y-4">
+            <div className="rounded-lg bg-yellow-500/10 border border-yellow-500/30 p-3 flex items-start gap-2">
+              <AlertTriangle className="h-4 w-4 text-yellow-500 shrink-0 mt-0.5" />
+              <div className="text-xs text-yellow-500">
+                <p className="font-semibold mb-1">Security Warning</p>
+                <p>Exporting your private key allows full access to your wallet. Never share it with anyone or expose it publicly.</p>
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              onClick={handleExportPrivateKey}
+              className="w-full touch-target"
+            >
+              {privateKeyCopied ? (
+                <>
+                  <Check className="h-4 w-4 mr-2 text-green-500" />
+                  Private Key Copied!
+                </>
+              ) : (
+                <>
+                  <Copy className="h-4 w-4 mr-2" />
+                  Export Private Key
+                </>
+              )}
+            </Button>
+            <p className="text-xs text-muted-foreground text-center">
+              Private key copied to clipboard. Store it securely.
+            </p>
+          </CardContent>
+        )}
       </Card>
 
       {/* Stats */}
