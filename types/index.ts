@@ -37,7 +37,7 @@ export interface DailyStreak {
   longestStreak: number;
 }
 
-export type CheeseRank = 'Cheddar' | 'Brie' | 'Gorgonzola' | 'King of Cheese';
+export type CheeseRank = 'Baby Cheese' | 'Cheddar Knight' | 'Gorgonzola King';
 
 export interface Transaction {
   id: string;

@@ -6,8 +6,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { User, Coins, TrendingUp, Clock, Wallet } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
-import { getWalletAddress } from '@/lib/services/blockchainService'
+import { getWalletAddress } from '@/lib/services/blockchain'
 import { getRankInfo } from '@/lib/services/gamificationService'
+import { GamificationWidget } from '@/components/GamificationWidget'
 
 export default function ProfilePage() {
   const { vpBalance, bets, getRank } = useVibePointsStore()
@@ -36,6 +37,9 @@ export default function ProfilePage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-neon-blue via-neon-yellow to-neon-purple bg-clip-text text-transparent">
             Profile
           </h1>
+        </div>
+        <div className="mt-4">
+          <GamificationWidget />
         </div>
       </div>
 

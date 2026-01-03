@@ -1,14 +1,19 @@
 "use client"
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { MarketCard } from '@/components/MarketCard'
+import { GamificationWidget } from '@/components/GamificationWidget'
+import { HowToPlayModal } from '@/components/HowToPlayModal'
 import { useVibePointsStore } from '@/lib/store'
 import { mockMarkets } from '@/lib/mock-data'
-import { Sparkles } from 'lucide-react'
+import { Sparkles, Info } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 export default function Home() {
   const { markets, initializeMarkets } = useVibePointsStore()
+  const [logoError, setLogoError] = useState(false)
+  const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false)
 
   useEffect(() => {
     // Initialize markets if empty
@@ -25,21 +30,40 @@ export default function Home() {
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-2">
-          <Image
-            src="/logo/vibecheese-removebg_small.png"
-            alt="VibeCheese Logo"
-            width={32}
-            height={32}
-            className="h-8 w-8 object-contain"
-          />
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-neon-blue via-neon-yellow to-neon-purple bg-clip-text text-transparent">
+          {logoError ? (
+            <span className="text-3xl h-8 w-8 flex items-center justify-center">🧀</span>
+          ) : (
+            <Image
+              src="/logo/vibecheese-removebg_small.png"
+              alt="VibeCheese Logo"
+              width={32}
+              height={32}
+              className="h-8 w-8 object-contain"
+              onError={() => setLogoError(true)}
+            />
+          )}
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-cheese-yellow via-soneium-blue to-cheese-yellow bg-clip-text text-transparent">
             VibeCheese
           </h1>
         </div>
-        <p className="text-muted-foreground text-sm">
-          Predict trends and vibe with the community
-        </p>
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-muted-foreground text-sm">
+            Predict trends and vibe with the community
+          </p>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsHowToPlayOpen(true)}
+            className="touch-target text-soneium-blue hover:text-soneium-blue/80"
+          >
+            <Info className="h-4 w-4 mr-1" />
+            How to Play
+          </Button>
+        </div>
+        <GamificationWidget />
       </div>
+
+      <HowToPlayModal isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} />
 
       {/* Markets Feed */}
       <div className="hide-scrollbar">

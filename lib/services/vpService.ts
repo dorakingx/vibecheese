@@ -1,4 +1,4 @@
-import { mintVP as blockchainMintVP, recordBet as blockchainRecordBet } from './blockchainService'
+import { mockBlockchainService } from './blockchain'
 import { Bet } from '@/types'
 
 /**
@@ -12,8 +12,8 @@ import { Bet } from '@/types'
  * @returns Amount minted
  */
 export async function mintVP(amount: number): Promise<number> {
-  const transaction = await blockchainMintVP(amount)
-  return transaction.amount
+  await mockBlockchainService.mintVP(amount)
+  return amount
 }
 
 /**
@@ -35,7 +35,7 @@ export async function earnVP(amount: number): Promise<number> {
  */
 export async function spendVP(bet: Bet): Promise<boolean> {
   try {
-    await blockchainRecordBet(bet)
+    await mockBlockchainService.recordBet(bet.marketId, bet.amount, bet.side)
     return true
   } catch (error) {
     console.error('Error spending VP:', error)

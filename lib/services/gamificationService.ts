@@ -77,14 +77,12 @@ export function calculateRank(vpBalance: number, totalWins: number): CheeseRank 
   // Combined score: VP balance + (wins * 100)
   const combinedScore = vpBalance + (totalWins * 100)
   
-  if (combinedScore >= 15000) {
-    return 'King of Cheese'
-  } else if (combinedScore >= 5000) {
-    return 'Gorgonzola'
+  if (combinedScore >= 5000) {
+    return 'Gorgonzola King'
   } else if (combinedScore >= 1000) {
-    return 'Brie'
+    return 'Cheddar Knight'
   } else {
-    return 'Cheddar'
+    return 'Baby Cheese'
   }
 }
 
@@ -107,29 +105,23 @@ export function calculateStreakBonus(streak: number): number {
  */
 export function getRankInfo(rank: CheeseRank) {
   const rankInfo = {
-    Cheddar: {
+    'Baby Cheese': {
       emoji: '🧀',
-      color: 'text-yellow-400',
-      bgColor: 'bg-yellow-400/20',
-      borderColor: 'border-yellow-400/50',
+      color: 'text-cheese-yellow',
+      bgColor: 'bg-cheese-yellow/20',
+      borderColor: 'border-cheese-yellow/50',
     },
-    Brie: {
+    'Cheddar Knight': {
       emoji: '🧀',
-      color: 'text-yellow-300',
-      bgColor: 'bg-yellow-300/20',
-      borderColor: 'border-yellow-300/50',
+      color: 'text-cheese-yellow',
+      bgColor: 'bg-cheese-yellow/30',
+      borderColor: 'border-cheese-yellow/60',
     },
-    Gorgonzola: {
-      emoji: '🧀',
-      color: 'text-blue-300',
-      bgColor: 'bg-blue-300/20',
-      borderColor: 'border-blue-300/50',
-    },
-    'King of Cheese': {
+    'Gorgonzola King': {
       emoji: '👑',
-      color: 'text-neon-yellow',
-      bgColor: 'bg-neon-yellow/20',
-      borderColor: 'border-neon-yellow/50',
+      color: 'text-cheese-yellow',
+      bgColor: 'bg-gradient-to-r from-cheese-yellow/30 to-soneium-blue/30',
+      borderColor: 'border-cheese-yellow/70',
     },
   }
   

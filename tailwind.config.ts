@@ -56,6 +56,12 @@ const config = {
           purple: "#A855F7",
           yellow: "#FFD700",
         },
+        soneium: {
+          blue: "#0057FF",
+        },
+        cheese: {
+          yellow: "#FFD700",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
