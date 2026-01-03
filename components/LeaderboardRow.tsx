@@ -70,6 +70,14 @@ export function LeaderboardRow({ user, rank }: LeaderboardRowProps) {
       {/* User Info */}
       <div className="flex-1">
         <div className="flex items-center gap-2 flex-wrap">
+          {/* Gold Cheese Icon for Top 3 */}
+          {rank <= 3 && (
+            <span className={`text-cheese-yellow ${
+              rank === 1 ? 'text-2xl' : 'text-xl'
+            }`}>
+              🧀
+            </span>
+          )}
           <h3 className="font-semibold">{user.name}</h3>
           {user.rank && (
             <Badge 

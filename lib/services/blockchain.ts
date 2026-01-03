@@ -1,3 +1,6 @@
+import { createPublicClient, http, type PublicClient } from 'viem'
+import { soneiumMinato } from '../soneium-config'
+
 /**
  * Blockchain Service Interface and Implementation
  * 
@@ -5,7 +8,15 @@
  * 
  * This interface prepares the codebase for Account Abstraction (AA) integration.
  * The mock implementation simulates blockchain operations for MVP demonstration.
+ * 
+ * Currently uses viem to connect to Soneium Minato Testnet for network awareness.
  */
+
+// Create public client for Soneium Minato Testnet
+const publicClient: PublicClient = createPublicClient({
+  chain: soneiumMinato,
+  transport: http(),
+})
 
 /**
  * Interface for blockchain operations
@@ -84,22 +95,77 @@ function generateMockAddress(): string {
   return '0x' + Array.from({ length: 40 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
 }
 
-// Cache wallet address for consistency
-let cachedWalletAddress: string | null = null
-
 /**
- * Gets the user's wallet address (sponsored AA wallet)
+ * Gets the user's smart wallet address (sponsored AA wallet)
+ * Checks localStorage first, then generates a deterministic address if not found
  * @returns Wallet address string
  */
 export async function getWalletAddress(): Promise<string> {
+  // Check localStorage first (set by LoginModal)
+  if (typeof window !== 'undefined') {
+    const storedAddress = localStorage.getItem('vibecheese-smart-wallet')
+    if (storedAddress) {
+      return storedAddress
+    }
+  }
+
   // Simulate network delay (100-200ms)
   const delay = 100 + Math.random() * 100
   await new Promise(resolve => setTimeout(resolve, delay))
 
-  if (!cachedWalletAddress) {
-    cachedWalletAddress = generateMockAddress()
+  // Generate deterministic address based on session (fallback)
+  // This ensures consistency across page refreshes if no login occurred
+  const sessionId = typeof window !== 'undefined' 
+    ? sessionStorage.getItem('vibecheese-session-id') || `session-${Date.now()}`
+    : `session-${Date.now()}`
+  
+  if (typeof window !== 'undefined' && !sessionStorage.getItem('vibecheese-session-id')) {
+    sessionStorage.setItem('vibecheese-session-id', sessionId)
   }
 
-  return cachedWalletAddress
+  // Generate deterministic address from session ID
+  let hash = 0
+  for (let i = 0; i < sessionId.length; i++) {
+    const char = sessionId.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash
+  }
+  const hex = Math.abs(hash).toString(16).padStart(8, '0')
+  const address = '0x' + hex.repeat(5).substring(0, 40)
+
+  // Store in localStorage for persistence
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('vibecheese-smart-wallet', address)
+  }
+
+  return address
+}
+
+/**
+ * Gets the current block number from Soneium Minato Testnet
+ * @returns Current block number, or null if connection fails
+ */
+export async function getBlockNumber(): Promise<bigint | null> {
+  try {
+    const blockNumber = await publicClient.getBlockNumber()
+    return blockNumber
+  } catch (error) {
+    console.error('[Blockchain] Failed to fetch block number:', error)
+    return null
+  }
+}
+
+/**
+ * Checks connection status to Soneium Minato Testnet
+ * @returns true if connected, false otherwise
+ */
+export async function checkConnection(): Promise<boolean> {
+  try {
+    await publicClient.getBlockNumber()
+    return true
+  } catch (error) {
+    console.error('[Blockchain] Connection check failed:', error)
+    return false
+  }
 }
 

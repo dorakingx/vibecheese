@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useVibePointsStore } from '@/lib/store'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { User, Coins, TrendingUp, Clock, Wallet } from 'lucide-react'
+import { User, Coins, TrendingUp, Clock, Wallet, Info } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { getWalletAddress } from '@/lib/services/blockchain'
 import { getRankInfo } from '@/lib/services/gamificationService'
@@ -63,23 +63,31 @@ export default function ProfilePage() {
         </CardHeader>
       </Card>
 
-      {/* Smart Wallet */}
-      <Card className="mb-6 border-neon-purple/30">
+      {/* Smart Account */}
+      <Card className="mb-6 border-soneium-blue/30">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Wallet className="h-5 w-5 text-neon-purple" />
-            Smart Wallet
+            <Wallet className="h-5 w-5 text-soneium-blue" />
+            Your Smart Account
+            <div className="group relative">
+              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-popover border border-border rounded-lg shadow-lg text-xs text-popover-foreground whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                Transactions are sponsored (Gasless) via Account Abstraction
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 border-4 border-transparent border-t-popover"></div>
+              </div>
+            </div>
           </CardTitle>
           <CardDescription>
-            You're using a sponsored Account Abstraction wallet on Soneium
+            Powered by Account Abstraction on Soneium
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="rounded-lg bg-secondary/50 p-4 font-mono text-sm break-all">
+          <div className="rounded-lg bg-secondary/50 p-4 font-mono text-sm break-all border border-soneium-blue/20">
             {walletAddress || 'Loading...'}
           </div>
-          <p className="text-xs text-muted-foreground mt-2">
-            Your transactions are sponsored - no gas fees required!
+          <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
+            <span className="text-green-500">✓</span>
+            Gasless transactions enabled
           </p>
         </CardContent>
       </Card>

@@ -21,15 +21,25 @@ export function GamificationWidget() {
         <span className="font-semibold">{rank}</span>
       </Badge>
 
-      {/* Daily Streak */}
-      {dailyStreak.currentStreak > 0 && (
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-cheese-yellow/20 to-soneium-blue/20 border border-cheese-yellow/30">
-          <Flame className="h-4 w-4 text-cheese-yellow" />
-          <span className="text-sm font-semibold text-foreground">
-            {dailyStreak.currentStreak} day{dailyStreak.currentStreak !== 1 ? 's' : ''}
-          </span>
-        </div>
-      )}
+      {/* Daily Streak - Always visible */}
+      <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border ${
+        dailyStreak.currentStreak > 0
+          ? 'bg-gradient-to-r from-cheese-yellow/20 to-soneium-blue/20 border-cheese-yellow/30'
+          : 'bg-secondary/50 border-border/50'
+      }`}>
+        <Flame className={`h-5 w-5 ${
+          dailyStreak.currentStreak > 0 ? 'text-cheese-yellow animate-pulse' : 'text-muted-foreground'
+        }`} />
+        <span className="text-sm font-semibold text-foreground">
+          {dailyStreak.currentStreak > 0 ? (
+            <>
+              {dailyStreak.currentStreak} day{dailyStreak.currentStreak !== 1 ? 's' : ''}
+            </>
+          ) : (
+            <span className="text-muted-foreground">Start your streak!</span>
+          )}
+        </span>
+      </div>
     </div>
   )
 }

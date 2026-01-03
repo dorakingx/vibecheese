@@ -4,28 +4,29 @@
 
 @layer base {
   :root {
-    --background: 222.2 84% 4.9%;
+    /* Cyber Cheese Theme - Deep Space Black Background (#0A0A0A) */
+    --background: 0 0% 3.9%;
     --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
+    --card: 0 0% 3.9%;
     --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
+    --popover: 0 0% 3.9%;
     --popover-foreground: 210 40% 98%;
-    /* Primary: Cheese Yellow (#FFD700) - HSL(51, 100%, 50%) */
+    /* Primary: Electric Yellow (#FFD700) - HSL(51, 100%, 50%) */
     --primary: 51 100% 50%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary-foreground: 0 0% 3.9%;
     /* Secondary: Soneium Blue (#0057FF) - HSL(225, 100%, 50%) */
     --secondary: 225 100% 50%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
+    --muted: 0 0% 14.9%;
     --muted-foreground: 215 20.2% 65.1%;
     /* Accent: Soneium Blue for ecosystem alignment */
     --accent: 225 100% 50%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 51 100% 50%;
     --radius: 0.5rem;
   }
 }
@@ -36,6 +37,14 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-color: #0A0A0A; /* Deep Space Black */
+  }
+  
+  /* Game-like bold typography for headers */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold;
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
 }
 

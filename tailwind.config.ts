@@ -62,6 +62,9 @@ const config = {
         cheese: {
           yellow: "#FFD700",
         },
+        cyber: {
+          black: "#0A0A0A",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

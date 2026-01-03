@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { MarketCard } from '@/components/MarketCard'
 import { GamificationWidget } from '@/components/GamificationWidget'
 import { HowToPlayModal } from '@/components/HowToPlayModal'
+import { LoginModal } from '@/components/LoginModal'
 import { useVibePointsStore } from '@/lib/store'
 import { mockMarkets } from '@/lib/mock-data'
 import { Sparkles, Info } from 'lucide-react'
@@ -14,6 +15,7 @@ export default function Home() {
   const { markets, initializeMarkets } = useVibePointsStore()
   const [logoError, setLogoError] = useState(false)
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false)
+  const [isLoginOpen, setIsLoginOpen] = useState(false)
 
   useEffect(() => {
     // Initialize markets if empty
@@ -21,7 +23,20 @@ export default function Home() {
     if (store.markets.length === 0) {
       initializeMarkets(mockMarkets)
     }
+
+    // Check if user has logged in (has smart wallet)
+    if (typeof window !== 'undefined') {
+      const hasSmartWallet = localStorage.getItem('vibecheese-smart-wallet')
+      if (!hasSmartWallet) {
+        setIsLoginOpen(true)
+      }
+    }
   }, [initializeMarkets])
+
+  const handleLogin = (provider: 'google' | 'sony') => {
+    // Login handled by LoginModal, just close it
+    setIsLoginOpen(false)
+  }
 
   const activeMarkets = markets.length > 0 ? markets : mockMarkets
 
@@ -43,7 +58,7 @@ export default function Home() {
             />
           )}
           <h1 className="text-3xl font-bold bg-gradient-to-r from-cheese-yellow via-soneium-blue to-cheese-yellow bg-clip-text text-transparent">
-            VibeCheese
+            VibeCheese 🧀
           </h1>
         </div>
         <div className="flex items-center justify-between mb-3">
@@ -64,6 +79,7 @@ export default function Home() {
       </div>
 
       <HowToPlayModal isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} />
+      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} onLogin={handleLogin} />
 
       {/* Markets Feed */}
       <div className="hide-scrollbar">
