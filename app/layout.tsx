@@ -3,6 +3,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { BottomNav } from "@/components/BottomNav"
 import { NetworkStatus } from "@/components/NetworkStatus"
+import { Toaster } from "sonner"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -34,6 +35,7 @@ export default function RootLayout({
         </main>
         <BottomNav />
         <NetworkStatus />
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   )

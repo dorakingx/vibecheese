@@ -14,6 +14,7 @@ import { useVibePointsStore } from '@/lib/store'
 import { mockBlockchainService } from '@/lib/services/blockchain'
 import { useState, useEffect } from 'react'
 import { TrendingUp, TrendingDown } from 'lucide-react'
+import { toast } from 'sonner'
 
 interface BettingModalProps {
   market: Market
@@ -82,6 +83,9 @@ export function BettingModal({ market, isOpen, onClose }: BettingModalProps) {
       await bet(latestMarket.id, selectedSide, currentBet)
       setIsSigning(false)
       
+      // Show success toast
+      toast.success("Bet placed successfully! Good luck 🧀")
+      
       // Brief success state before closing
       await new Promise(resolve => setTimeout(resolve, 300))
       onClose()
@@ -91,7 +95,7 @@ export function BettingModal({ market, isOpen, onClose }: BettingModalProps) {
     } catch (error) {
       console.error('Error placing bet:', error)
       setIsSigning(false)
-      alert(error instanceof Error ? error.message : 'Failed to place bet')
+      toast.error(error instanceof Error ? error.message : 'Failed to place bet')
     } finally {
       setIsPlacingBet(false)
       setIsSigning(false)

@@ -11,6 +11,7 @@ import { getWalletAddress } from '@/lib/services/blockchain'
 import { getRankInfo, calculateRank } from '@/lib/services/gamificationService'
 import { GamificationWidget } from '@/components/GamificationWidget'
 import type { CheeseRank } from '@/types'
+import { toast } from 'sonner'
 
 export default function ProfilePage() {
   const { vpBalance, bets, getRank } = useVibePointsStore()
@@ -28,9 +29,11 @@ export default function ProfilePage() {
     try {
       await navigator.clipboard.writeText(walletAddress)
       setCopied(true)
+      toast.success("Address copied to clipboard")
       setTimeout(() => setCopied(false), 2000)
     } catch (error) {
       console.error('Failed to copy address:', error)
+      toast.error('Failed to copy address')
     }
   }
 
@@ -38,16 +41,17 @@ export default function ProfilePage() {
     if (typeof window === 'undefined') return
     const privateKey = localStorage.getItem('vibecheese-burner-private-key')
     if (!privateKey) {
-      alert('No private key found. Please login first.')
+      toast.error('No private key found. Please login first.')
       return
     }
     try {
       await navigator.clipboard.writeText(privateKey)
       setPrivateKeyCopied(true)
+      toast.success("Private key copied to clipboard")
       setTimeout(() => setPrivateKeyCopied(false), 2000)
     } catch (error) {
       console.error('Failed to copy private key:', error)
-      alert('Failed to copy private key')
+      toast.error('Failed to copy private key')
     }
   }
 

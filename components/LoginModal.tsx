@@ -10,6 +10,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Wallet } from 'lucide-react'
 import { createBurnerWallet } from '@/lib/services/blockchain'
+import { toast } from 'sonner'
 
 interface LoginModalProps {
   isOpen: boolean
@@ -35,7 +36,7 @@ export function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps) {
       onClose()
     } catch (error) {
       console.error('[Login] Failed to create burner wallet:', error)
-      alert('Failed to create wallet. Please try again.')
+      toast.error('Failed to create wallet. Please try again.')
     }
   }
 

@@ -70,56 +70,50 @@
 }
 
 /* Network status pulse animation */
-@keyframes network-pulse {
+@keyframes pulse-green {
   0%, 100% {
     opacity: 1;
-    transform: scale(1);
+    text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
   }
   50% {
-    opacity: 0.6;
-    transform: scale(1.2);
+    opacity: 0.5;
   }
 }
 
 .network-pulse {
-  animation: network-pulse 2s ease-in-out infinite;
+  animation: pulse-green 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   display: inline-block;
 }
 
 /* Signing message pulse animation */
-@keyframes signing-pulse {
+@keyframes pulse-blue {
   0%, 100% {
-    opacity: 1;
-    background-color: hsl(var(--soneium-blue) / 0.1);
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
   }
-  50% {
-    opacity: 0.9;
-    background-color: hsl(var(--soneium-blue) / 0.15);
+  70% {
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
   }
 }
 
 .signing-pulse {
-  animation: signing-pulse 1.5s ease-in-out infinite;
+  animation: pulse-blue 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 /* Block number flash animation */
-@keyframes block-flash {
+@keyframes flash-text {
   0% {
-    color: hsl(var(--foreground));
-    background-color: transparent;
-  }
-  50% {
-    color: #FFD700; /* Cheese Yellow */
-    background-color: rgba(255, 215, 0, 0.2);
+    color: #FFD700;
+    text-shadow: 0 0 10px #FFD700;
+    transform: scale(1.1);
   }
   100% {
-    color: hsl(var(--foreground));
-    background-color: transparent;
+    color: inherit;
+    transform: scale(1);
   }
 }
 
 .block-flash {
-  animation: block-flash 0.5s ease-in-out;
+  animation: flash-text 0.5s ease-out;
   padding: 2px 4px;
   border-radius: 4px;
 }
