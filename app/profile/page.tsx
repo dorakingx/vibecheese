@@ -1,14 +1,24 @@
 "use client"
 
+import { useEffect, useState } from 'react'
 import { useVibePointsStore } from '@/lib/store'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { User, Coins, TrendingUp, Clock } from 'lucide-react'
+import { User, Coins, TrendingUp, Clock, Wallet } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
+import { getWalletAddress } from '@/lib/services/blockchainService'
+import { getRankInfo } from '@/lib/services/gamificationService'
 
 export default function ProfilePage() {
-  const { vpBalance, bets } = useVibePointsStore()
+  const { vpBalance, bets, getRank } = useVibePointsStore()
+  const [walletAddress, setWalletAddress] = useState<string>('')
 
+  useEffect(() => {
+    getWalletAddress().then(setWalletAddress)
+  }, [])
+
+  const rank = getRank()
+  const rankInfo = getRankInfo(rank)
   const totalBets = bets.length
   const resolvedBets = bets.filter(b => b.resolved)
   const wonBets = resolvedBets.filter(b => b.won)
@@ -23,7 +33,7 @@ export default function ProfilePage() {
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-2">
           <User className="h-6 w-6 text-neon-blue" />
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-neon-blue to-neon-purple bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-neon-blue via-neon-yellow to-neon-purple bg-clip-text text-transparent">
             Profile
           </h1>
         </div>
@@ -32,12 +42,42 @@ export default function ProfilePage() {
       {/* VP Balance Card */}
       <Card className="mb-6 border-neon-blue/30 bg-gradient-to-br from-card to-secondary/20">
         <CardHeader>
-          <CardDescription>Your Balance</CardDescription>
+          <div className="flex items-center justify-between mb-2">
+            <CardDescription>Your Balance</CardDescription>
+            <Badge 
+              variant="outline" 
+              className={`${rankInfo.bgColor} ${rankInfo.borderColor} border ${rankInfo.color}`}
+            >
+              <span className="mr-1">{rankInfo.emoji}</span>
+              {rank}
+            </Badge>
+          </div>
           <CardTitle className="text-4xl font-bold text-neon-blue flex items-center gap-2">
             <Coins className="h-8 w-8" />
             {vpBalance.toLocaleString()} VP
           </CardTitle>
         </CardHeader>
+      </Card>
+
+      {/* Smart Wallet */}
+      <Card className="mb-6 border-neon-purple/30">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Wallet className="h-5 w-5 text-neon-purple" />
+            Smart Wallet
+          </CardTitle>
+          <CardDescription>
+            You're using a sponsored Account Abstraction wallet on Soneium
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="rounded-lg bg-secondary/50 p-4 font-mono text-sm break-all">
+            {walletAddress || 'Loading...'}
+          </div>
+          <p className="text-xs text-muted-foreground mt-2">
+            Your transactions are sponsored - no gas fees required!
+          </p>
+        </CardContent>
       </Card>
 
       {/* Stats */}

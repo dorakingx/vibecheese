@@ -1,4 +1,4 @@
-# VibeCheck - Social Vibe Forecasting Mini App
+# VibeCheese - Social Vibe Forecasting Mini App
 
 A mobile-first Prediction Market Mini App for the Soneium ecosystem where users predict future trends using free "Vibe Points (VP)" instead of real cryptocurrency.
 
@@ -52,7 +52,7 @@ npm start
 ## Project Structure
 
 ```
-VibeCheck/
+VibeCheese/
 ├── app/                    # Next.js app router pages
 │   ├── layout.tsx         # Root layout
 │   ├── page.tsx           # Home feed

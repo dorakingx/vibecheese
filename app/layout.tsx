@@ -6,7 +6,7 @@ import { BottomNav } from "@/components/BottomNav"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "VibeCheck - Social Vibe Forecasting",
+  title: "VibeCheese - Social Vibe Forecasting",
   description: "Predict future trends and earn Vibe Points",
   manifest: "/manifest.json",
   themeColor: "#00D9FF",

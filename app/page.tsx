@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect } from 'react'
+import Image from 'next/image'
 import { MarketCard } from '@/components/MarketCard'
 import { useVibePointsStore } from '@/lib/store'
 import { mockMarkets } from '@/lib/mock-data'
@@ -24,9 +25,15 @@ export default function Home() {
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-2">
-          <Sparkles className="h-6 w-6 text-neon-blue" />
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-neon-blue to-neon-purple bg-clip-text text-transparent">
-            VibeCheck
+          <Image
+            src="/logo/vibecheese-removebg_small.png"
+            alt="VibeCheese Logo"
+            width={32}
+            height={32}
+            className="h-8 w-8 object-contain"
+          />
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-neon-blue via-neon-yellow to-neon-purple bg-clip-text text-transparent">
+            VibeCheese
           </h1>
         </div>
         <p className="text-muted-foreground text-sm">

@@ -9,6 +9,7 @@ export interface Market {
   totalVP: number;
   resolved?: boolean;
   outcome?: 'yes' | 'no';
+  watchers?: number; // number of people watching
 }
 
 export interface Bet {
@@ -27,5 +28,22 @@ export interface User {
   vpBalance: number;
   totalWins: number;
   totalBets: number;
+  rank?: CheeseRank;
+}
+
+export interface DailyStreak {
+  currentStreak: number;
+  lastBetDate: string; // ISO date string
+  longestStreak: number;
+}
+
+export type CheeseRank = 'Cheddar' | 'Brie' | 'Gorgonzola' | 'King of Cheese';
+
+export interface Transaction {
+  id: string;
+  type: 'mint' | 'bet' | 'reward';
+  amount: number;
+  timestamp: Date;
+  hash?: string; // blockchain transaction hash
 }
 

@@ -69,7 +69,7 @@ export function BettingModal({ market, isOpen, onClose }: BettingModalProps) {
 
     setIsPlacingBet(true)
     try {
-      bet(latestMarket.id, selectedSide, currentBet)
+      await bet(latestMarket.id, selectedSide, currentBet)
       onClose()
       // Reset state
       setSelectedSide(null)

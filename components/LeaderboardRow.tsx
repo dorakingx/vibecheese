@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Trophy, Medal, Award } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { getRankInfo } from '@/lib/services/gamificationService'
 
 interface LeaderboardRowProps {
   user: User
@@ -41,6 +42,9 @@ export function LeaderboardRow({ user, rank }: LeaderboardRowProps) {
   const winRate = user.totalBets > 0 
     ? Math.round((user.totalWins / user.totalBets) * 100) 
     : 0
+  
+  const cheeseRank = user.rank || 'Cheddar'
+  const rankInfo = getRankInfo(cheeseRank)
 
   return (
     <div
@@ -58,15 +62,24 @@ export function LeaderboardRow({ user, rank }: LeaderboardRowProps) {
 
       {/* Avatar */}
       <Avatar className="h-12 w-12">
-        <AvatarFallback className="bg-gradient-to-br from-neon-blue to-neon-purple text-white font-bold">
+        <AvatarFallback className="bg-gradient-to-br from-neon-blue via-neon-yellow to-neon-purple text-white font-bold">
           {user.name.charAt(0).toUpperCase()}
         </AvatarFallback>
       </Avatar>
 
       {/* User Info */}
       <div className="flex-1">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <h3 className="font-semibold">{user.name}</h3>
+          {user.rank && (
+            <Badge 
+              variant="outline" 
+              className={`text-xs ${rankInfo.bgColor} ${rankInfo.borderColor} border ${rankInfo.color}`}
+            >
+              <span className="mr-1">{rankInfo.emoji}</span>
+              {user.rank}
+            </Badge>
+          )}
           {rank <= 3 && (
             <Badge variant="neon" className="text-xs">
               Top {rank}

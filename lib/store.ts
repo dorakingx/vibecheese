@@ -2,16 +2,22 @@
 
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { Bet, Market } from '@/types'
+import { Bet, Market, DailyStreak, CheeseRank } from '@/types'
+import { spendVP, earnVP as vpEarnVP } from './services/vpService'
+import { calculateStreak, calculateStreakBonus, calculateRank } from './services/gamificationService'
 
 interface VibePointsState {
   vpBalance: number
   bets: Bet[]
   markets: Market[]
-  bet: (marketId: string, side: 'yes' | 'no', amount: number) => void
-  earnVP: (amount: number) => void
+  dailyStreak: DailyStreak
+  bet: (marketId: string, side: 'yes' | 'no', amount: number) => Promise<void>
+  earnVP: (amount: number) => Promise<void>
   getBalance: () => number
   getBetHistory: () => Bet[]
+  getRank: () => CheeseRank
+  checkAndUpdateStreak: () => void
+  incrementStreak: () => void
   updateMarket: (marketId: string, updates: Partial<Market>) => void
   initializeMarkets: (markets: Market[]) => void
   resolveMarket: (marketId: string, outcome: 'yes' | 'no') => void
@@ -19,14 +25,21 @@ interface VibePointsState {
 
 const INITIAL_VP = 1000
 
+const INITIAL_STREAK: DailyStreak = {
+  currentStreak: 0,
+  lastBetDate: '',
+  longestStreak: 0,
+}
+
 export const useVibePointsStore = create<VibePointsState>()(
   persist(
     (set, get) => ({
       vpBalance: INITIAL_VP,
       bets: [],
       markets: [],
+      dailyStreak: INITIAL_STREAK,
 
-      bet: (marketId: string, side: 'yes' | 'no', amount: number) => {
+      bet: async (marketId: string, side: 'yes' | 'no', amount: number) => {
         const state = get()
         if (amount < 10) {
           throw new Error('Minimum bet is 10 VP')
@@ -44,6 +57,12 @@ export const useVibePointsStore = create<VibePointsState>()(
           resolved: false,
         }
 
+        // Spend VP via service (records on-chain)
+        const success = await spendVP(newBet)
+        if (!success) {
+          throw new Error('Failed to record bet on blockchain')
+        }
+
         // Update market betting totals
         const market = state.markets.find(m => m.id === marketId)
         if (market) {
@@ -54,20 +73,50 @@ export const useVibePointsStore = create<VibePointsState>()(
             totalVP: market.totalVP + amount,
           }
 
+          // Update streak (calculateStreak handles incrementing if it's a new day)
+          let updatedStreak = calculateStreak(state.dailyStreak)
+          // If first bet ever, start streak at 1
+          if (!state.dailyStreak.lastBetDate && updatedStreak.currentStreak === 0) {
+            updatedStreak = { ...updatedStreak, currentStreak: 1, longestStreak: 1 }
+          }
+          const streakBonus = calculateStreakBonus(updatedStreak.currentStreak)
+          
           set({
-            vpBalance: state.vpBalance - amount,
+            vpBalance: state.vpBalance - amount + streakBonus,
             bets: [...state.bets, newBet],
             markets: state.markets.map(m => m.id === marketId ? updatedMarket : m),
+            dailyStreak: updatedStreak,
           })
+
+          // If streak bonus was granted, mint it on-chain
+          if (streakBonus > 0) {
+            await vpEarnVP(streakBonus)
+          }
         } else {
+          // Update streak (calculateStreak handles incrementing if it's a new day)
+          let updatedStreak = calculateStreak(state.dailyStreak)
+          // If first bet ever, start streak at 1
+          if (!state.dailyStreak.lastBetDate && updatedStreak.currentStreak === 0) {
+            updatedStreak = { ...updatedStreak, currentStreak: 1, longestStreak: 1 }
+          }
+          const streakBonus = calculateStreakBonus(updatedStreak.currentStreak)
+          
           set({
-            vpBalance: state.vpBalance - amount,
+            vpBalance: state.vpBalance - amount + streakBonus,
             bets: [...state.bets, newBet],
+            dailyStreak: updatedStreak,
           })
+
+          // If streak bonus was granted, mint it on-chain
+          if (streakBonus > 0) {
+            await vpEarnVP(streakBonus)
+          }
         }
       },
 
-      earnVP: (amount: number) => {
+      earnVP: async (amount: number) => {
+        // Earn VP via service (mints on-chain)
+        await vpEarnVP(amount)
         set((state) => ({
           vpBalance: state.vpBalance + amount,
         }))
@@ -79,6 +128,29 @@ export const useVibePointsStore = create<VibePointsState>()(
 
       getBetHistory: () => {
         return get().bets
+      },
+
+      getRank: () => {
+        const state = get()
+        const totalWins = state.bets.filter(b => b.resolved && b.won).length
+        return calculateRank(state.vpBalance, totalWins)
+      },
+
+      checkAndUpdateStreak: () => {
+        const state = get()
+        const updatedStreak = calculateStreak(state.dailyStreak)
+        set({ dailyStreak: updatedStreak })
+      },
+
+      incrementStreak: () => {
+        const state = get()
+        const updatedStreak = calculateStreak(state.dailyStreak)
+        set({
+          dailyStreak: {
+            ...updatedStreak,
+            currentStreak: updatedStreak.currentStreak + 1,
+          },
+        })
       },
 
       updateMarket: (marketId: string, updates: Partial<Market>) => {
@@ -145,7 +217,7 @@ export const useVibePointsStore = create<VibePointsState>()(
       },
     }),
     {
-      name: 'vibecheck-storage',
+      name: 'vibecheese-storage',
     }
   )
 )

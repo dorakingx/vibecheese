@@ -4,7 +4,7 @@ import { Market } from '@/types'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Clock } from 'lucide-react'
+import { Clock, Eye } from 'lucide-react'
 import { useState } from 'react'
 import { BettingModal } from './BettingModal'
 
@@ -82,6 +82,16 @@ export function MarketCard({ market }: MarketCardProps) {
                 </div>
               </div>
             </div>
+
+            {/* Hype Meter */}
+            {market.watchers !== undefined && (
+              <div className="flex items-center gap-2 rounded-lg bg-secondary/50 p-2">
+                <Eye className={`h-4 w-4 ${market.watchers > 300 ? 'text-neon-yellow animate-pulse' : 'text-muted-foreground'}`} />
+                <span className="text-sm text-muted-foreground">
+                  <span className="font-semibold text-foreground">{market.watchers.toLocaleString()}</span> watching
+                </span>
+              </div>
+            )}
 
             {/* Deadline */}
             <div className="flex items-center gap-2 text-sm text-muted-foreground">

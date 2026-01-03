@@ -11,12 +11,12 @@ export default function LeaderboardPage() {
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-2">
           <Trophy className="h-6 w-6 text-neon-blue" />
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-neon-blue to-neon-purple bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-neon-blue via-neon-yellow to-neon-purple bg-clip-text text-transparent">
             Leaderboard
           </h1>
         </div>
         <p className="text-muted-foreground text-sm">
-          Top Vibe Checkers ranked by VP balance
+          Top VibeCheese players ranked by VP balance and Cheese Rank
         </p>
       </div>
 

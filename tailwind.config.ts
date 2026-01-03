@@ -54,6 +54,7 @@ const config = {
         neon: {
           blue: "#00D9FF",
           purple: "#A855F7",
+          yellow: "#FFD700",
         },
       },
       borderRadius: {

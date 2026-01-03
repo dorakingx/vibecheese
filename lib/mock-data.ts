@@ -1,4 +1,10 @@
-import { Market } from '@/types'
+import { Market, User, CheeseRank } from '@/types'
+import { calculateRank } from './services/gamificationService'
+
+// Helper to generate random watchers count (50-500)
+function randomWatchers(): number {
+  return Math.floor(Math.random() * 450) + 50
+}
 
 export const mockMarkets: Market[] = [
   {
@@ -10,6 +16,7 @@ export const mockMarkets: Market[] = [
     noBets: 1800,
     totalVP: 4300,
     resolved: false,
+    watchers: randomWatchers(),
   },
   {
     id: '2',
@@ -20,6 +27,7 @@ export const mockMarkets: Market[] = [
     noBets: 2100,
     totalVP: 5300,
     resolved: false,
+    watchers: randomWatchers(),
   },
   {
     id: '3',
@@ -30,6 +38,7 @@ export const mockMarkets: Market[] = [
     noBets: 2800,
     totalVP: 7300,
     resolved: false,
+    watchers: randomWatchers(),
   },
   {
     id: '4',
@@ -40,6 +49,7 @@ export const mockMarkets: Market[] = [
     noBets: 3200,
     totalVP: 5000,
     resolved: false,
+    watchers: randomWatchers(),
   },
   {
     id: '5',
@@ -50,6 +60,7 @@ export const mockMarkets: Market[] = [
     noBets: 1900,
     totalVP: 4100,
     resolved: false,
+    watchers: randomWatchers(),
   },
   {
     id: '6',
@@ -60,6 +71,7 @@ export const mockMarkets: Market[] = [
     noBets: 2400,
     totalVP: 5500,
     resolved: false,
+    watchers: randomWatchers(),
   },
   {
     id: '7',
@@ -70,6 +82,7 @@ export const mockMarkets: Market[] = [
     noBets: 2300,
     totalVP: 5000,
     resolved: false,
+    watchers: randomWatchers(),
   },
   {
     id: '8',
@@ -80,6 +93,7 @@ export const mockMarkets: Market[] = [
     noBets: 3500,
     totalVP: 5000,
     resolved: false,
+    watchers: randomWatchers(),
   },
   {
     id: '9',
@@ -90,6 +104,7 @@ export const mockMarkets: Market[] = [
     noBets: 3800,
     totalVP: 8000,
     resolved: false,
+    watchers: randomWatchers(),
   },
   {
     id: '10',
@@ -100,6 +115,7 @@ export const mockMarkets: Market[] = [
     noBets: 2100,
     totalVP: 5000,
     resolved: false,
+    watchers: randomWatchers(),
   },
   {
     id: '11',
@@ -110,6 +126,7 @@ export const mockMarkets: Market[] = [
     noBets: 2600,
     totalVP: 5000,
     resolved: false,
+    watchers: randomWatchers(),
   },
   {
     id: '12',
@@ -120,19 +137,20 @@ export const mockMarkets: Market[] = [
     noBets: 3400,
     totalVP: 7000,
     resolved: false,
+    watchers: randomWatchers(),
   },
 ]
 
-export const mockLeaderboardUsers = [
-  { id: '1', name: 'CryptoWhale', vpBalance: 15200, totalWins: 45, totalBets: 78 },
-  { id: '2', name: 'VibeMaster', vpBalance: 12800, totalWins: 38, totalBets: 65 },
-  { id: '3', name: 'PredictionPro', vpBalance: 11500, totalWins: 42, totalBets: 72 },
-  { id: '4', name: 'TrendSetter', vpBalance: 9800, totalWins: 35, totalBets: 58 },
-  { id: '5', name: 'FutureSeer', vpBalance: 9200, totalWins: 33, totalBets: 55 },
-  { id: '6', name: 'MarketGuru', vpBalance: 8700, totalWins: 31, totalBets: 52 },
-  { id: '7', name: 'VibeChecker', vpBalance: 8100, totalWins: 29, totalBets: 48 },
-  { id: '8', name: 'Oracle', vpBalance: 7600, totalWins: 27, totalBets: 45 },
-  { id: '9', name: 'ForecastKing', vpBalance: 7200, totalWins: 26, totalBets: 43 },
-  { id: '10', name: 'TrendWatcher', vpBalance: 6800, totalWins: 24, totalBets: 40 },
+export const mockLeaderboardUsers: User[] = [
+  { id: '1', name: 'CryptoWhale', vpBalance: 15200, totalWins: 45, totalBets: 78, rank: calculateRank(15200, 45) },
+  { id: '2', name: 'VibeMaster', vpBalance: 12800, totalWins: 38, totalBets: 65, rank: calculateRank(12800, 38) },
+  { id: '3', name: 'PredictionPro', vpBalance: 11500, totalWins: 42, totalBets: 72, rank: calculateRank(11500, 42) },
+  { id: '4', name: 'TrendSetter', vpBalance: 9800, totalWins: 35, totalBets: 58, rank: calculateRank(9800, 35) },
+  { id: '5', name: 'FutureSeer', vpBalance: 9200, totalWins: 33, totalBets: 55, rank: calculateRank(9200, 33) },
+  { id: '6', name: 'MarketGuru', vpBalance: 8700, totalWins: 31, totalBets: 52, rank: calculateRank(8700, 31) },
+  { id: '7', name: 'VibeCheeser', vpBalance: 8100, totalWins: 29, totalBets: 48, rank: calculateRank(8100, 29) },
+  { id: '8', name: 'Oracle', vpBalance: 7600, totalWins: 27, totalBets: 45, rank: calculateRank(7600, 27) },
+  { id: '9', name: 'ForecastKing', vpBalance: 7200, totalWins: 26, totalBets: 43, rank: calculateRank(7200, 26) },
+  { id: '10', name: 'TrendWatcher', vpBalance: 6800, totalWins: 24, totalBets: 40, rank: calculateRank(6800, 24) },
 ]
 
