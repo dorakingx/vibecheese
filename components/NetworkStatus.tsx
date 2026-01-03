@@ -55,7 +55,7 @@ export function NetworkStatus() {
           <>
             <span className="text-green-500 network-pulse">🟢</span>
             <span className="text-xs text-muted-foreground">
-              Soneium Minato (Live)
+              Live on Soneium Minato (Testnet)
               {blockNumber !== null && (
                 <span className="ml-1 font-mono">(Block: #{blockNumber.toString()})</span>
               )}

@@ -51,6 +51,12 @@ export default function ProfilePage() {
     }
   }
 
+  // Truncate address for mobile display
+  const truncateAddress = (address: string): string => {
+    if (!address || address.length < 10) return address
+    return `${address.slice(0, 6)}...${address.slice(-4)}`
+  }
+
   const rank = getRank()
   const rankInfo = getRankInfo(rank)
   const totalBets = bets.length
@@ -171,7 +177,8 @@ export default function ProfilePage() {
         <CardContent>
           <div className="flex items-center gap-2">
             <div className="flex-1 rounded-lg bg-secondary/50 p-4 font-mono text-sm break-all border border-soneium-blue/20">
-              {walletAddress || 'Loading...'}
+              <span className="hidden sm:inline">{walletAddress || 'Loading...'}</span>
+              <span className="sm:hidden">{walletAddress ? truncateAddress(walletAddress) : 'Loading...'}</span>
             </div>
             <Button
               variant="outline"

@@ -75,8 +75,8 @@ export function BettingModal({ market, isOpen, onClose }: BettingModalProps) {
       // Sign the transaction with Smart Account before processing bet
       await mockBlockchainService.recordBet(latestMarket.id, currentBet, selectedSide)
       
-      // Show signing message - brief delay to ensure users see the cryptographic operation
-      await new Promise(resolve => setTimeout(resolve, 300))
+      // Show signing message - extended delay for demo video visibility (judges need to see the signing process)
+      await new Promise(resolve => setTimeout(resolve, 1500))
       
       // Process the bet through the store
       await bet(latestMarket.id, selectedSide, currentBet)
@@ -191,7 +191,7 @@ export function BettingModal({ market, isOpen, onClose }: BettingModalProps) {
 
           {/* Signing State Message */}
           {isSigning && (
-            <div className="rounded-lg bg-soneium-blue/10 border border-soneium-blue/30 p-3 text-center">
+            <div className="rounded-lg bg-soneium-blue/10 border border-soneium-blue/30 p-3 text-center signing-pulse">
               <p className="text-sm text-soneium-blue font-medium">
                 🔐 Signing transaction with Smart Account...
               </p>

@@ -86,6 +86,22 @@
   display: inline-block;
 }
 
+/* Signing message pulse animation */
+@keyframes signing-pulse {
+  0%, 100% {
+    opacity: 1;
+    background-color: hsl(var(--soneium-blue) / 0.1);
+  }
+  50% {
+    opacity: 0.9;
+    background-color: hsl(var(--soneium-blue) / 0.15);
+  }
+}
+
+.signing-pulse {
+  animation: signing-pulse 1.5s ease-in-out infinite;
+}
+
 /* Mobile-first styles */
 @layer utilities {
   .hide-scrollbar {
