@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
 import { useVibePointsStore } from '@/lib/store'
+import { mockBlockchainService } from '@/lib/services/blockchain'
 import { useState, useEffect } from 'react'
 import { TrendingUp, TrendingDown } from 'lucide-react'
 
@@ -71,9 +72,13 @@ export function BettingModal({ market, isOpen, onClose }: BettingModalProps) {
     setIsPlacingBet(true)
     setIsSigning(true)
     try {
-      // Show signing message - 800ms delay to ensure users see the cryptographic operation
-      await new Promise(resolve => setTimeout(resolve, 800))
+      // Sign the transaction with Smart Account before processing bet
+      await mockBlockchainService.recordBet(latestMarket.id, currentBet, selectedSide)
       
+      // Show signing message - brief delay to ensure users see the cryptographic operation
+      await new Promise(resolve => setTimeout(resolve, 300))
+      
+      // Process the bet through the store
       await bet(latestMarket.id, selectedSide, currentBet)
       setIsSigning(false)
       

@@ -74,8 +74,9 @@ export class MockBlockchainService implements IBlockchainService {
    * Actually signs the bet message to prove cryptographic operations
    */
   async recordBet(marketId: string, amount: number, side: string): Promise<void> {
-    // Create message payload for signing
-    const message = `VibeCheese Bet: ${marketId} - ${side} - ${amount} VP`
+    // Create message payload for signing with timestamp
+    const timestamp = new Date().toISOString()
+    const message = `VibeCheese Transaction: Bet ${amount} VP on Market ${marketId} at ${timestamp}`
     
     // Sign the bet message using the burner wallet
     const signature = await signMessage(message)
@@ -87,7 +88,9 @@ export class MockBlockchainService implements IBlockchainService {
     const txHash = `0x${Math.random().toString(16).substr(2, 64)}`
     
     console.log(`[Blockchain Mock] Recording bet: Market ${marketId}, ${side}, ${amount} VP`)
-    console.log(`[Blockchain Mock] Bet Signature:`, signature)
+    if (signature) {
+      console.log(`[Startale AA Sig]: ${signature}`)
+    }
     console.log(`[Blockchain Mock] Transaction Hash: ${txHash}`)
     console.log(`[Blockchain Mock] Status: Confirmed`)
     

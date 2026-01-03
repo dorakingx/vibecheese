@@ -22,6 +22,12 @@ A mobile-first Prediction Market Mini App for the Soneium ecosystem where users 
 - **Web3**: viem for blockchain interactions
 - **Deployment**: Vercel-ready
 
+## Architecture & Web3 Features
+
+- **Soneium Minato Ready**: Configured for Chain ID 1946 with viem integration
+- **Simulated Account Abstraction**: Uses local "Burner Wallets" to demonstrate gasless, one-click onboarding (Startale AA pattern)
+- **Cryptographic Verification**: All bets are signed by the user's local key pair to ensure authenticity
+
 ## Technical Architecture
 
 ### Account Abstraction (AA) Simulation
