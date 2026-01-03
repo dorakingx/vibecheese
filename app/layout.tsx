@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { BottomNav } from "@/components/BottomNav"
@@ -7,10 +7,18 @@ import { NetworkStatus } from "@/components/NetworkStatus"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "VibeCheese 🧀 - Social Vibe Forecasting",
-  description: "Predict future trends and earn Vibe Points",
+  title: "VibeCheese | Gamified Social Prediction on Soneium",
+  description: "Predict trends, earn VP, and climb the ranks in the Soneium ecosystem.",
   manifest: "/manifest.json",
   themeColor: "#FFD700",
+}
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  viewportFit: "cover",
 }
 
 export default function RootLayout({

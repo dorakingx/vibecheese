@@ -46,6 +46,11 @@
     font-weight: 700;
     letter-spacing: -0.02em;
   }
+  
+  /* Prevent zoom on input focus (mobile UX improvement) */
+  input, textarea, select {
+    font-size: 16px !important;
+  }
 }
 
 /* Streak animation */

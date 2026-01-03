@@ -54,6 +54,7 @@ export function BettingModal({ market, isOpen, onClose }: BettingModalProps) {
   const [selectedSide, setSelectedSide] = useState<'yes' | 'no' | null>(null)
   const [betAmount, setBetAmount] = useState([100])
   const [isPlacingBet, setIsPlacingBet] = useState(false)
+  const [isSigning, setIsSigning] = useState(false)
 
   // Get latest market data from store
   const latestMarket = markets.find(m => m.id === market.id) || market
@@ -68,17 +69,27 @@ export function BettingModal({ market, isOpen, onClose }: BettingModalProps) {
     }
 
     setIsPlacingBet(true)
+    setIsSigning(true)
     try {
+      // Show signing message
+      await new Promise(resolve => setTimeout(resolve, 500)) // Brief delay to show signing state
+      
       await bet(latestMarket.id, selectedSide, currentBet)
+      setIsSigning(false)
+      
+      // Brief success state before closing
+      await new Promise(resolve => setTimeout(resolve, 300))
       onClose()
       // Reset state
       setSelectedSide(null)
       setBetAmount([100])
     } catch (error) {
       console.error('Error placing bet:', error)
+      setIsSigning(false)
       alert(error instanceof Error ? error.message : 'Failed to place bet')
     } finally {
       setIsPlacingBet(false)
+      setIsSigning(false)
     }
   }
 
@@ -173,6 +184,15 @@ export function BettingModal({ market, isOpen, onClose }: BettingModalProps) {
             </div>
           )}
 
+          {/* Signing State Message */}
+          {isSigning && (
+            <div className="rounded-lg bg-soneium-blue/10 border border-soneium-blue/30 p-3 text-center">
+              <p className="text-sm text-soneium-blue font-medium">
+                Signing transaction on Soneium Minato...
+              </p>
+            </div>
+          )}
+
           {/* Place Bet Button */}
           <Button
             variant="neon"
@@ -180,7 +200,12 @@ export function BettingModal({ market, isOpen, onClose }: BettingModalProps) {
             onClick={handleBet}
             disabled={!selectedSide || currentBet < minBet || currentBet > vpBalance || isPlacingBet}
           >
-            {isPlacingBet ? 'Placing Bet...' : `Place Bet (${currentBet} VP)`}
+            {isSigning 
+              ? 'Signing...' 
+              : isPlacingBet 
+                ? 'Placing Bet...' 
+                : `Place Bet (${currentBet} VP)`
+            }
           </Button>
         </div>
       </DialogContent>

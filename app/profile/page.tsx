@@ -123,7 +123,7 @@ export default function ProfilePage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Wallet className="h-5 w-5 text-soneium-blue" />
-            Your Smart Account
+            Soneium Smart Account (Demo)
             <div className="group relative">
               <Info className="h-4 w-4 text-muted-foreground cursor-help" />
               <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-popover border border-border rounded-lg shadow-lg text-xs text-popover-foreground whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
@@ -140,10 +140,11 @@ export default function ProfilePage() {
           <div className="rounded-lg bg-secondary/50 p-4 font-mono text-sm break-all border border-soneium-blue/20">
             {walletAddress || 'Loading...'}
           </div>
-          <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
-            <span className="text-green-500">✓</span>
-            Gasless transactions enabled
-          </p>
+          <div className="mt-3 flex items-center gap-2">
+            <Badge variant="outline" className="bg-soneium-blue/10 border-soneium-blue/30 text-soneium-blue text-xs">
+              Gasless Transactions Sponsored by Startale AA
+            </Badge>
+          </div>
         </CardContent>
       </Card>
 
