@@ -136,7 +136,7 @@ export default function ProfilePage() {
                   {vpNeeded.toLocaleString()} VP until <span className="font-semibold text-cheese-yellow">{currentThreshold.next}</span>
                 </>
               ) : (
-                <>You've reached the maximum rank!</>
+                <>You&apos;ve reached the maximum rank!</>
               )}
             </CardDescription>
           </CardHeader>

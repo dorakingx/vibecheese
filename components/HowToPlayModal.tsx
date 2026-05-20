@@ -64,7 +64,7 @@ export function HowToPlayModal({ isOpen, onClose }: HowToPlayModalProps) {
             <div className="flex-1">
               <h3 className="font-semibold text-lg mb-1">Predict Market Outcomes</h3>
               <p className="text-sm text-muted-foreground">
-                Bet "Vibe In" (Yes) or "Vibe Out" (No) on prediction markets. Winners split the losing pool proportionally.
+                Bet &quot;Vibe In&quot; (Yes) or &quot;Vibe Out&quot; (No) on prediction markets. Winners split the losing pool proportionally.
               </p>
             </div>
           </div>
@@ -76,7 +76,7 @@ export function HowToPlayModal({ isOpen, onClose }: HowToPlayModalProps) {
               <div>
                 <h4 className="font-semibold mb-1">Compliance</h4>
                 <p className="text-xs text-muted-foreground">
-                  This app complies with regulations by using free "Vibe Points" instead of real cryptocurrency. No real money is lost or gained.
+                  This app complies with regulations by using free &quot;Vibe Points&quot; instead of real cryptocurrency. No real money is lost or gained.
                 </p>
               </div>
             </div>

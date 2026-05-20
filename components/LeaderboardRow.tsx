@@ -43,7 +43,7 @@ export function LeaderboardRow({ user, rank }: LeaderboardRowProps) {
     ? Math.round((user.totalWins / user.totalBets) * 100) 
     : 0
   
-  const cheeseRank = user.rank || 'Cheddar'
+  const cheeseRank = user.rank || 'Baby Cheese'
   const rankInfo = getRankInfo(cheeseRank)
 
   return (
